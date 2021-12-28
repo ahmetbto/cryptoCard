@@ -7,7 +7,7 @@
             <div class="col-md-6 float-left">
               <span class="title2">
                 Get your place cards in 5 minutes. Make your wedding stand out
-                with our gorgeous place cards..</span
+                with our gorgeous placve cards..</span
               >
               <p class="title3">
                 You'll receive a PDF containing place cards ready for your
