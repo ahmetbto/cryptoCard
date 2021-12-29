@@ -10,7 +10,7 @@
 
             <q-toolbar-title></q-toolbar-title>
             <q-btn flat style="color: #f5eedc" label="How It Works" />
-            <q-btn flat style="color: #f5eedc" label="Guide" />
+            <q-btn flat style="color: #f5eedc" label="Contact" />
           </q-toolbar>
         </div>
       </div>

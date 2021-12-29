@@ -4,8 +4,8 @@
       <div class="bg text-white q-pa-md">
         <div class="container">
           <q-toolbar>
-            <img class="logo" src="../../../public/logo.png" />
-            <p class="logo-title">Crypto Card</p>
+            <a href="/"> <img class="logo" src="../../../public/logo.png" /></a>
+            <a href="/" class="logo-title">Crypto Card</a>
 
             <q-toolbar-title></q-toolbar-title>
             <q-btn flat style="color: #f5eedc" label="How It Works" />
@@ -48,5 +48,7 @@ export default {};
   font-size: 32px;
   font-weight: 600;
   margin: 10px;
+  text-decoration: none !important;
+  color: #f5eedc;
 }
 </style>
