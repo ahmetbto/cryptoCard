@@ -12,32 +12,63 @@
         <div class="container">
           <div class="row">
             <p class="choose">Edit your card</p>
-
+            {{ cardID }}
             <br />
 
             <div class="edit-box">
-              <div class="edit-header"></div>
-              <div class="img">
-                <!-- <img src="../../../public/cards/4.png" /> -->
+              <div class="edit-header">
+                <p>Card header</p>
               </div>
-              <div class="edit-footer"></div>
+              <div class="img">
+                <img src="../../../public/cards/4.png" />
+              </div>
+              <div class="edit-footer"><p>Card footer</p></div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <br />
+    <br />
+    <br />
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      cardID: this.$route.params.id,
+    };
+  },
+  watch: {
+    $route(to, from) {
+      this.cardID = to.params.id;
+    },
+    methods: {
+      paramsID() {
+        console.log("dfsldfösdf");
+      },
+    },
+    created() {
+      this.paramsID();
+    },
+  },
+};
 </script>
 
 <style scoped>
+.container {
+  padding-left: 20%;
+  padding-right: 20%;
+}
 .edit-box {
   width: 100%;
-  background-color: #dfd7d7;
+  background-color: #210555;
   padding: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .edit-header {
   width: 100%;
@@ -61,5 +92,8 @@ export default {};
 }
 .header p {
   font-size: 25px;
+}
+.img img {
+  width: 100%;
 }
 </style>

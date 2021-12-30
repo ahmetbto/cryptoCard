@@ -9,6 +9,10 @@ const routes = [
         path: "/card-details",
         component: () => import("src/pages/site/cardDetails.vue"),
       },
+      {
+        path: "/card-details/:id",
+        component: () => import("src/pages/site/cardDetails.vue"),
+      },
     ],
   },
 
