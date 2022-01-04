@@ -16,11 +16,12 @@
             <br />
             <div class="row">
               <div
-                v-for="(item, id) in cardList"
+                v-for="(item, id) in getCardList"
                 :key="id"
-                class="col-md-4 float-left"
+                class="col-md-3 float-left"
               >
-                <div class="card-box">
+                <div class="card2-box">
+                  <p>{{ item.CardName }}</p>
                   <img
                     @click="cardDetails(item.id)"
                     class="card-img"
@@ -42,110 +43,40 @@
 export default {
   data() {
     return {
-      cardList: [
-        {
-          id: "D1984654F",
-          cardName: "CardName",
-          imgUrl: "http://192.168.1.102:8080/cards/2.png",
-          price: "free",
-          with: "800",
-          height: "600",
-        },
-        {
-          id: "W1984E6D54",
-          cardName: "CardName",
-          imgUrl: "http://192.168.1.102:8080/cards/3.png",
-          price: "free",
-          with: "800",
-          height: "600",
-        },
-        {
-          id: "P19846FSD54",
-          cardName: "CardName",
-          imgUrl: "http://192.168.1.102:8080/cards/4.png",
-          price: "free",
-          with: "800",
-          height: "600",
-        },
-        {
-          id: "1984FGH654",
-          cardName: "CardName",
-          imgUrl: "http://192.168.1.102:8080/cards/5.png",
-          price: "free",
-          with: "800",
-          height: "600",
-        },
-        {
-          id: "T984GTR654",
-          cardName: "CardName",
-          imgUrl: "http://192.168.1.102:8080/cards/2.png",
-          price: "free",
-          with: "800",
-          height: "600",
-        },
-        {
-          id: "D98465T4",
-          cardName: "CardName",
-          imgUrl: "http://192.168.1.102:8080/cards/3.png",
-          price: "free",
-          with: "800",
-          height: "600",
-        },
-        {
-          id: "19HT84654",
-          cardName: "CardName",
-          imgUrl: "http://192.168.1.102:8080/cards/4.png",
-          price: "free",
-          with: "800",
-          height: "600",
-        },
-        {
-          id: "19R46D5G4",
-          cardName: "CardName",
-          imgUrl: "http://192.168.1.102:8080/cards/5.png",
-          price: "free",
-          with: "800",
-          height: "600",
-        },
-        {
-          id: "19D8G4654",
-          cardName: "CardName",
-          imgUrl: "http://192.168.1.102:8080/cards/4.png",
-          price: "free",
-          with: "800",
-          height: "600",
-        },
-      ],
+      getCardList: [],
     };
   },
 
-  created() {},
   methods: {
     cardDetails(id) {
       this.$router.push(`/card-details/${id}/`);
     },
   },
+  created() {
+    this.getCardList = this.$store.state.cardList;
+  },
 };
 </script>
 
 <style scoped>
-.card-box {
-  width: 100%;
-  overflow: hidden;
-  margin: 10px;
+.card2-box {
+  width: 97%;
+  margin: 5px;
+  margin-right: 10px !important;
   box-shadow: 0 1px 5px;
   overflow: hidden;
-  height: 220px;
+  height: 210px !important;
 }
 .card-img {
-  object-fit: cover;
-  padding: 10px;
+  object-fit: contain;
+  padding: 0px;
   width: 100%;
-  transition: all 0.3s;
+  height: 100% !important;
+  transition: all 0.4s;
   cursor: pointer;
 }
 .card-img:hover {
-  padding: 15px;
+  padding: 5px;
 }
 .choose {
   text-align: center;
