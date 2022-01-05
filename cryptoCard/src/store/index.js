@@ -10,7 +10,7 @@ export default store(function (/* { ssrContext } */) {
         {
           id: "D1984654F",
           cardName: "CardName",
-          imgUrl: "/cards/2.png",
+          imgUrl: "/cards/ati.png",
           price: "free",
           with: "800",
           height: "600",
@@ -18,7 +18,7 @@ export default store(function (/* { ssrContext } */) {
         {
           id: "W1984E6D54",
           cardName: "CardName",
-          imgUrl: "/cards/3.png",
+          imgUrl: "/cards/2.png",
           price: "free",
           with: "800",
           height: "600",

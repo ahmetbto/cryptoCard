@@ -41,11 +41,38 @@
                   <div class="color-box clr21" @click="getClr21"></div>
                 </div>
 
+                <div class="edit-text">
+                  <input type="text" class="edit-text1" v-model="text1" />
+                  <input type="text" class="edit-text2" v-model="text2" />
+                </div>
+
+                <div class="edit-location">
+                  <div class="horizontal">
+                    <p>YATAY</p>
+                    <div>
+                      <i @click="h_left" class="icon fas fa-chevron-left"></i>
+                      <i @click="h_right" class="icon fas fa-chevron-right"></i>
+                    </div>
+                  </div>
+                  <div class="horizontal">
+                    <p>DİKEY</p>
+                    <div>
+                      <i @click="v_down" class="icon fas fa-chevron-left"></i>
+                      <i @click="v_up" class="icon fas fa-chevron-right"></i>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="font-palet palet"></div>
               </div>
 
               <div class="img" :style="color">
-                <img :src="getCardDetails.imgUrl" />
+                <div class="text" :style="textLocation">
+                  <p class="text1">{{ text1 }}</p>
+                  <p class="text2">{{ text2 }}</p>
+                </div>
+
+                <img class="img-content" :src="getCardDetails.imgUrl" />
               </div>
               <div class="edit-footer">
                 <q-btn class="btn" color="deep-orange" label="Preview Card" />
@@ -69,10 +96,15 @@
 export default {
   data() {
     return {
+      hValue: 50,
+      vValue: 50,
+      textLocation: "",
       getCardList: [],
       cardID: this.$route.params.id,
       getCardDetails: {},
       color: "background-color:white",
+      text1: "Welcome back! It looks like you were ",
+      text2: "Welcome back! It looks like you were ",
     };
   },
   created() {
@@ -92,6 +124,23 @@ export default {
     },
   },
   methods: {
+    h_left() {
+      this.hValue = this.hValue - 2;
+      this.textLocation = "left:" + this.hValue + "%";
+    },
+    h_right() {
+      this.hValue = this.hValue + 2;
+      this.textLocation = "left:" + this.hValue + "%";
+    },
+    v_up() {
+      this.vValue = this.vValue + 2;
+      this.textLocation = "top:" + this.vValue + "%";
+    },
+    v_down() {
+      this.vValue = this.vValue - 2;
+      this.textLocation = "top:" + this.vValue + "%";
+    },
+
     getClr1() {
       this.color = "background-color:#231f20";
     },
@@ -136,7 +185,7 @@ export default {
       this.color = "background-color:#231f20";
     },
     getClr15() {
-      this.color = "background-color:#00a79d";
+      this.color = "background-color:#FFFFFF";
     },
     getClr16() {
       this.color = "background-color:#9e1f63";
@@ -161,6 +210,63 @@ export default {
 </script>
 
 <style scoped>
+.img-content {
+  border: 1px solid gray;
+}
+.edit-location {
+  padding: 10px 5px;
+  display: flex;
+  flex-direction: column;
+}
+.horizontal {
+  background-color: rgb(250, 248, 248);
+  display: flex;
+  width: 80px;
+  height: 30px;
+  padding: 6px 5px;
+  flex-direction: row;
+}
+.horizontal div {
+  display: flex;
+  flex-direction: row;
+  margin-left: 5px;
+}
+
+.icon {
+  padding: 3px;
+  margin-left: 3px;
+  width: 20px;
+  height: 20px;
+}
+.icon:hover {
+  background-color: grey;
+  color: white;
+  cursor: pointer;
+}
+.text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 100px;
+  z-index: 2;
+  padding: 10px;
+}
+.text1 {
+  margin-top: 3px;
+
+  padding: 2px;
+  text-align: center;
+  font-size: 20px;
+}
+.text2 {
+  margin-top: 3px;
+  padding: 2px;
+  text-align: center;
+  font-size: 14px;
+}
+
 .palet {
   border-right: 1px solid rgba(194, 191, 191, 0.6);
 }
@@ -207,7 +313,7 @@ export default {
   background-color: #00a79d;
 }
 .clr15 {
-  background-color: #1c75bc;
+  background-color: #ffffff;
 }
 .clr16 {
   background-color: #9e1f63;
@@ -229,7 +335,7 @@ export default {
   background-color: #e6e7e8;
 }
 .color-palet {
-  width: 176px;
+  width: 220px;
   padding: 5px;
   display: flex;
   justify-content: space-between;
@@ -259,6 +365,15 @@ export default {
   width: 100%;
   height: 80px;
   background-color: #f3f3f3;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.edit-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
 }
 .edit-footer {
   display: flex;
@@ -266,6 +381,29 @@ export default {
   justify-content: space-between;
   padding: 10px;
   background-color: rgba(207, 201, 201, 0.4);
+}
+.edit-text1 {
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 4px;
+  border: none;
+  text-align: center;
+  font-size: 20px;
+  padding-left: 10px;
+  border-radius: 1px;
+}
+.edit-text2 {
+  border: none;
+  margin-top: 5px;
+  padding: 4px;
+  text-align: center;
+  padding-left: 10px;
+  font-size: 16px;
+  width: 98%;
+  border-radius: 1px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .btn {
   margin-right: 7px;
@@ -290,6 +428,8 @@ export default {
 }
 .img {
   padding: 55px;
+  position: relative;
+  z-index: 1;
 }
 .img img {
   width: 100%;
