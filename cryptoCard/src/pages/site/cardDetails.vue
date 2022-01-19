@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div @click="previewHidden" v-if="isPreview" id="preview">
+      <div class="">
+        <img class="" :src="previewContent" />
+      </div>
+    </div>
     <div class="q-pa">
       <!--top section -->
       <div class="bg">
@@ -11,36 +16,50 @@
         </div>
         <div class="container">
           <div class="row">
-            <p class="choose">Edit your card</p>
+            <p @mousemove="fontSliderPassive" class="choose">Edit your card</p>
 
             <br />
 
             <div class="edit-box">
               <div class="edit-header">
-                <div class="color-palet palet">
-                  <div class="color-box clr1" @click="getClr1"></div>
-                  <div class="color-box clr2" @click="getClr2"></div>
-                  <div class="color-box clr3" @click="getClr3"></div>
-                  <div class="color-box clr4" @click="getClr4"></div>
-                  <div class="color-box clr5" @click="getClr5"></div>
-                  <div class="color-box clr6" @click="getClr6"></div>
-                  <div class="color-box clr7" @click="getClr7"></div>
-                  <div class="color-box clr8" @click="getClr8"></div>
-                  <div class="color-box clr9" @click="getClr9"></div>
-                  <div class="color-box clr10" @click="getClr10"></div>
-                  <div class="color-box clr11" @click="getClr11"></div>
-                  <div class="color-box clr12" @click="getClr12"></div>
-                  <div class="color-box clr13" @click="getClr13"></div>
-                  <div class="color-box clr14" @click="getClr14"></div>
-                  <div class="color-box clr15" @click="getClr15"></div>
-                  <div class="color-box clr16" @click="getClr16"></div>
-                  <div class="color-box clr17" @click="getClr17"></div>
-                  <div class="color-box clr18" @click="getClr18"></div>
-                  <div class="color-box clr19" @click="getClr19"></div>
-                  <div class="color-box clr20" @click="getClr20"></div>
-                  <div class="color-box clr21" @click="getClr21"></div>
+                <div v-if="slider1" class="font-slider1">
+                  <q-slider
+                    @change="editFontSize1Event"
+                    v-model="slide1Value"
+                    :min="0"
+                    :max="40"
+                    :step="1"
+                  />
                 </div>
 
+                <div v-if="slider2" class="font-slider2">
+                  <q-slider
+                    @change="editFontSize2Event"
+                    v-model="slide2Value"
+                    :min="0"
+                    :max="40"
+                    :step="1"
+                  />
+                </div>
+
+                <div class="color-palet palet">
+                  <div v-for="n in 21" :key="n">
+                    <div
+                      class="color-box"
+                      :style="`background-color:#${colors[n]};`"
+                      @click="getClr(colors[n])"
+                    ></div>
+                  </div>
+                </div>
+
+                <div class="edit-fontSize">
+                  <span class="fontSize1Text"
+                    ><i @click="fontSliderActive1" class="fas fa-font icon"></i
+                  ></span>
+                  <span class="fontSize2Text"
+                    ><i @click="fontSliderActive2" class="icon fas fa-font"></i
+                  ></span>
+                </div>
                 <div class="edit-text">
                   <input type="text" class="edit-text1" v-model="text1" />
                   <input type="text" class="edit-text2" v-model="text2" />
@@ -62,23 +81,42 @@
                     </div>
                   </div>
                 </div>
-
-                <div class="font-palet palet"></div>
               </div>
 
-              <div class="img" :style="color">
+              <div
+                id="content"
+                @mousemove="fontSliderPassive"
+                class="img"
+                :style="color"
+              >
                 <div class="text" :style="textLocation">
-                  <p class="text1">{{ text1 }}</p>
-                  <p class="text2">{{ text2 }}</p>
+                  <p :style="editFontSize1" class="text1">{{ text1 }}</p>
+                  <p :style="editFontSize2" class="text2">{{ text2 }}</p>
                 </div>
 
                 <img class="img-content" :src="getCardDetails.imgUrl" />
               </div>
               <div class="edit-footer">
-                <q-btn class="btn" color="deep-orange" label="Preview Card" />
+                <q-btn
+                  @click="previewShow"
+                  class="btn"
+                  color="deep-orange"
+                  label="Preview Card"
+                />
                 <div>
-                  <q-btn class="btn" color="secondary" label="Sava JPG" />
-                  <q-btn class="btn" color="primary" label="Save PDF" />
+                  <q-btn
+                    @click="makeJPG"
+                    class="btn"
+                    color="primary"
+                    label="Save JPG"
+                  />
+
+                  <q-btn
+                    @click="makePDF"
+                    class="btn"
+                    color="primary"
+                    label="Save PDF"
+                  />
                 </div>
               </div>
             </div>
@@ -93,9 +131,28 @@
 </template>
 
 <script>
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+
 export default {
+  setup() {
+    return {};
+  },
+
   data() {
     return {
+      slide1Value: "",
+      slide2Value: "",
+      previewContent: "",
+      isPreview: false,
+      slider1: false,
+      slider2: false,
+      color1: "FF008E",
+      color2: "0F0E0E",
+
+      editFontSize1: "font-size:25px;color:#FF008E",
+      editFontSize2: "font-size:" + this.slide2Value + "px",
+
       hValue: 50,
       vValue: 50,
       textLocation: "",
@@ -105,8 +162,29 @@ export default {
       color: "background-color:white",
       text1: "Welcome back! It looks like you were ",
       text2: "Welcome back! It looks like you were ",
+      colors: {
+        1: "231f20",
+        2: "ed1c24",
+        3: "fff200",
+        4: "00a651",
+        5: "00aeef",
+        6: "2e3192",
+        7: "ec008c",
+        8: "be1e2d",
+        9: "ef4136",
+        10: "ec008c",
+        11: "f15a29",
+        12: "f7941d",
+        13: "009444",
+        14: "231f20",
+        15: "FFFFFF",
+        16: "9e1f63",
+        17: "c2b59b",
+        18: "c49a6c",
+      },
     };
   },
+  watch: {},
   created() {
     this.getCardList = this.$store.state.cardList;
 
@@ -124,92 +202,166 @@ export default {
     },
   },
   methods: {
+    previewHidden() {
+      this.isPreview = false;
+    },
+    previewShow() {
+      const section = document.getElementById("content");
+      window.html2canvas = html2canvas;
+      var test = this;
+      html2canvas(section).then(function (canvas) {
+        const uri = canvas.toDataURL();
+        test.previewContent = uri;
+        console.log(uri);
+        test.isPreview = true;
+      });
+    },
+    makePDF() {
+      window.html2canvas = html2canvas;
+      var doc = new jsPDF({
+        orientation: "l",
+        unit: "mm",
+        format: [900, 600],
+      });
+      doc.html(document.querySelector("#content"), {
+        callback: function (pdf) {
+          pdf.save("mypdf.pdf");
+        },
+      });
+    },
+
+    makeJPG() {
+      const section = document.getElementById("content");
+      console.log("Result", section);
+      window.html2canvas = html2canvas;
+      html2canvas(section).then(function (canvas) {
+        // this.simulateDownloadImageClick(canvas.toDataURL(), "file-name.png");
+        var link = document.createElement("a");
+        const uri = canvas.toDataURL();
+        const fileName = "file-name.jpg";
+        link.click();
+
+        // console.log("uri", uri);
+        link.href = uri;
+        link.download = fileName;
+        link.click();
+      });
+    },
+
+    getClr(color_value) {
+      if (this.slider1 == true) {
+        this.color1 = color_value;
+        this.editFontSize1 =
+          "font-size:" +
+          this.slide1Value +
+          "px" +
+          ";" +
+          "color:" +
+          "#" +
+          color_value;
+      } else if (this.slider2 == true) {
+        this.color2 = color_value;
+        this.editFontSize2 =
+          "font-size:" +
+          this.slide2Value +
+          "px" +
+          ";" +
+          "color:" +
+          "#" +
+          color_value;
+      } else {
+        this.color = `background-color:#${color_value}`;
+      }
+    },
+    fontSliderActive1() {
+      this.slider1 = true;
+      this.slider2 = false;
+    },
+    fontSliderActive2() {
+      this.slider2 = true;
+      this.slider1 = false;
+    },
+    fontSliderPassive() {
+      this.slider1 = false;
+      this.slider2 = false;
+    },
+
+    editFontSize1Event() {
+      this.editFontSize1 =
+        "font-size:" +
+        this.slide1Value +
+        "px" +
+        ";" +
+        "color:" +
+        "#" +
+        this.color1;
+    },
+
+    editFontSize2Event() {
+      this.editFontSize2 = "font-size:" + this.slide2Value + "px";
+    },
+
     h_left() {
       this.hValue = this.hValue - 2;
-      this.textLocation = "left:" + this.hValue + "%";
+      this.textLocation =
+        "left:" + this.hValue + "%;" + "top:" + this.vValue + "%";
     },
     h_right() {
       this.hValue = this.hValue + 2;
-      this.textLocation = "left:" + this.hValue + "%";
+      this.textLocation =
+        "left:" + this.hValue + "%;" + "top:" + this.vValue + "%";
     },
     v_up() {
       this.vValue = this.vValue + 2;
-      this.textLocation = "top:" + this.vValue + "%";
+      this.textLocation =
+        "top:" + this.vValue + "%;" + "left:" + this.hValue + "%";
     },
     v_down() {
       this.vValue = this.vValue - 2;
-      this.textLocation = "top:" + this.vValue + "%";
-    },
-
-    getClr1() {
-      this.color = "background-color:#231f20";
-    },
-    getClr2() {
-      this.color = "background-color:#ed1c24";
-    },
-    getClr3() {
-      this.color = "background-color:#fff200";
-    },
-    getClr4() {
-      this.color = "background-color:#00a651";
-    },
-
-    getClr5() {
-      this.color = "background-color:#00aeef";
-    },
-    getClr6() {
-      this.color = "background-color:#2e3192";
-    },
-    getClr7() {
-      this.color = "background-color:#ec008c";
-    },
-    getClr8() {
-      this.color = "background-color:#be1e2d";
-    },
-    getClr9() {
-      this.color = "background-color:#ef4136";
-    },
-    getClr10() {
-      this.color = "background-color:#ec008c";
-    },
-    getClr11() {
-      this.color = "background-color:#f15a29";
-    },
-    getClr12() {
-      this.color = "background-color:#f7941d";
-    },
-    getClr13() {
-      this.color = "background-color:#009444";
-    },
-    getClr14() {
-      this.color = "background-color:#231f20";
-    },
-    getClr15() {
-      this.color = "background-color:#FFFFFF";
-    },
-    getClr16() {
-      this.color = "background-color:#9e1f63";
-    },
-    getClr17() {
-      this.color = "background-color:#c2b59b";
-    },
-    getClr18() {
-      this.color = "background-color:#c49a6c";
-    },
-    getClr19() {
-      this.color = "background-color:#808285";
-    },
-    getClr20() {
-      this.color = "background-color:#bcbec0";
-    },
-    getClr21() {
-      this.color = "background-color:#e6e7e8";
+      this.textLocation =
+        "top:" + this.vValue + "%;" + "left:" + this.hValue + "%";
     },
   },
 };
 </script>
 
 <style scoped>
+#preview {
+  position: absolute;
+  left: 0;
+  top: 25%;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(44, 40, 40, 0.8);
+  z-index: 2;
+}
+#preview div {
+  border: 2px solid white;
+  position: absolute;
+  padding: 5px;
+  top: 150px;
+  left: 50%;
+  transform: translate(-50%);
+}
+#preview div img {
+  width: 800px;
+  box-shadow: 1px 1px 1px #888888;
+}
+
+.edit-fontSize {
+  padding: 10px;
+}
+.fontSize1Text {
+  width: 30px !important;
+  display: block;
+  margin-bottom: 5px;
+  padding: 2px 5px;
+}
+.fontSize2Text {
+  width: 30px !important;
+  display: block;
+  padding: 2px 5px;
+}
 .img-content {
   border: 1px solid gray;
 }
@@ -254,86 +406,23 @@ export default {
   padding: 10px;
 }
 .text1 {
+  font-family: "Dancing Script", cursive;
   margin-top: 3px;
-
   padding: 2px;
   text-align: center;
-  font-size: 20px;
+  /* font-size: 25px; */
 }
 .text2 {
   margin-top: 3px;
   padding: 2px;
   text-align: center;
-  font-size: 14px;
+  /* font-size: 16px; */
 }
 
 .palet {
   border-right: 1px solid rgba(194, 191, 191, 0.6);
 }
-.clr1 {
-  background-color: #231f20;
-}
-.clr2 {
-  background-color: #ed1c24;
-}
-.clr3 {
-  background-color: #fff200;
-}
-.clr4 {
-  background-color: #00a651;
-}
-.clr5 {
-  background-color: #00aeef;
-}
-.clr6 {
-  background-color: #2e3192;
-}
-.clr7 {
-  background-color: #ec008c;
-}
-.clr8 {
-  background-color: #be1e2d;
-}
-.clr9 {
-  background-color: #ef4136;
-}
-.clr10 {
-  background-color: #ec008c;
-}
-.clr11 {
-  background-color: #f15a29;
-}
-.clr12 {
-  background-color: #f7941d;
-}
-.clr13 {
-  background-color: #009444;
-}
-.clr14 {
-  background-color: #00a79d;
-}
-.clr15 {
-  background-color: #ffffff;
-}
-.clr16 {
-  background-color: #9e1f63;
-}
-.clr17 {
-  background-color: #c2b59b;
-}
 
-.clr18 {
-  background-color: #c49a6c;
-}
-.clr19 {
-  background-color: #808285;
-}
-.clr20 {
-  background-color: #bcbec0;
-}
-.clr21 {
-  background-color: #e6e7e8;
-}
 .color-palet {
   width: 220px;
   padding: 5px;
@@ -362,6 +451,7 @@ export default {
   justify-content: center;
 }
 .edit-header {
+  position: relative;
   width: 100%;
   height: 80px;
   background-color: #f3f3f3;
@@ -369,6 +459,34 @@ export default {
   flex-direction: row;
   justify-content: space-between;
 }
+.font-slider1 {
+  background-color: rgb(243, 229, 229);
+  position: absolute;
+  display: block;
+  padding-top: 7px;
+  height: 40px;
+  width: 30%;
+  top: 0;
+  left: 200px;
+  border-radius: 18px;
+  z-index: 553;
+  border: 1px solid rgba(224, 224, 224, 0.6);
+}
+
+.font-slider2 {
+  background-color: rgb(243, 229, 229);
+  position: absolute;
+  display: block;
+  padding-top: 7px;
+  height: 40px;
+  width: 30%;
+  top: 33px;
+  left: 200px;
+  border-radius: 18px;
+  z-index: 553;
+  border: 1px solid rgba(224, 224, 224, 0.6);
+}
+
 .edit-text {
   display: flex;
   flex-direction: column;
@@ -425,9 +543,10 @@ export default {
 }
 .header p {
   font-size: 25px;
+  padding-top: 10px;
 }
 .img {
-  padding: 55px;
+  padding: 25px;
   position: relative;
   z-index: 1;
 }
