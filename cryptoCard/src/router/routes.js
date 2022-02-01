@@ -1,3 +1,5 @@
+import store from "../store/index";
+
 const routes = [
   {
     path: "/",
@@ -14,6 +16,42 @@ const routes = [
         component: () => import("src/pages/site/cardDetails.vue"),
       },
     ],
+  },
+
+  //Control Panel Layouts
+  {
+    path: "/controlPanel",
+    component: () => import("../layouts/controlPanelLayout.vue"),
+
+    beforeEnter(to, from, next) {
+      var token = localStorage.getItem("token");
+      if (token) {
+        next();
+      } else {
+        next("/login");
+      }
+    },
+    children: [
+      {
+        path: "/controlPanel",
+        component: () => import("src/pages/controlPanel/home.vue"),
+      },
+
+      {
+        path: "/controlPanel/addCard",
+        component: () => import("src/pages/controlPanel/addCard.vue"),
+      },
+    ],
+  },
+
+  {
+    path: "/login",
+    component: () => import("src/pages/site/login.vue"),
+  },
+
+  {
+    path: "/register",
+    component: () => import("src/pages/site/register.vue"),
   },
 
   // Always leave this as last one,

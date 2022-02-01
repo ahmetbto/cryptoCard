@@ -6,6 +6,7 @@ export default store(function (/* { ssrContext } */) {
     modules: {},
 
     state: {
+      username: "",
       cardList: [
         {
           id: "D1984654F",
@@ -80,6 +81,18 @@ export default store(function (/* { ssrContext } */) {
           height: "600",
         },
       ],
+    },
+
+    getters: {
+      usernameGetters(state) {
+        return state;
+      },
+    },
+
+    mutations: {
+      usernameMutations(state, value) {
+        state.username = value;
+      },
     },
 
     strict: process.env.DEBUGGING,

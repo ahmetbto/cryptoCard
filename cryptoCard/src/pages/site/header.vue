@@ -10,7 +10,13 @@
             <q-toolbar-title></q-toolbar-title>
             <q-btn flat style="color: #f5eedc" label="How It Works" />
             <q-btn flat style="color: #f5eedc" label="Guide" />
-            <q-btn class="active" flat style="color: #f5eedc" label="Log In" />
+            <q-btn
+              class="active"
+              flat
+              style="color: #f5eedc"
+              @click="login"
+              label="Log In"
+            />
           </q-toolbar>
         </div>
       </div>
@@ -20,7 +26,13 @@
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    login() {
+      this.$router.push("/login");
+    },
+  },
+};
 </script>
 
 <style lang="css" scoped>
