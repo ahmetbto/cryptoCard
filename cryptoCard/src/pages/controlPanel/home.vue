@@ -3,8 +3,6 @@
     <div class="home">
       <div class="header">
         <p>Control Panel Anasayfa</p>
-
-        {{ username }}
       </div>
     </div>
   </div>

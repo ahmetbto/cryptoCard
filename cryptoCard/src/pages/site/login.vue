@@ -69,7 +69,7 @@ export default {
 
               localStorage.setItem("token", founData.username); // Kayıt Bulundu. Token dolduruldu
 
-              this.$router.push("/controlPanel");
+              this.$router.push("/controlPanel/home");
             } else {
               this.failMessage = true;
               this.failMessageText = "No Records Found";

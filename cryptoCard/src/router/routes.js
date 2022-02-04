@@ -33,13 +33,21 @@ const routes = [
     },
     children: [
       {
-        path: "/controlPanel",
+        path: "/controlPanel/home",
         component: () => import("src/pages/controlPanel/home.vue"),
       },
 
       {
         path: "/controlPanel/addCard",
         component: () => import("src/pages/controlPanel/addCard.vue"),
+      },
+      {
+        path: "/controlPanel/cardList",
+        component: () => import("src/pages/controlPanel/cardList.vue"),
+      },
+      {
+        path: "/controlPanel/users",
+        component: () => import("src/pages/controlPanel/users.vue"),
       },
     ],
   },
@@ -54,8 +62,6 @@ const routes = [
     component: () => import("src/pages/site/register.vue"),
   },
 
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: "/:catchAll(.*)*",
     component: () => import("src/pages/site/Error404.vue"),

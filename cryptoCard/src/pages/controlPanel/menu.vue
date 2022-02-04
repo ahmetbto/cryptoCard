@@ -15,7 +15,7 @@
             <i class="fas fa-angle-right"></i></div
         ></a>
       </li>
-      <!-- Yazılar -->
+      <!-- Cards -->
       <li @click="yazilar_altmenu_goster">
         <a>
           <div class=""><i class="fas fa-file-alt"></i>Cards</div>
@@ -24,7 +24,7 @@
         ></a>
       </li>
 
-      <!-- Yazılar Alt Menü -->
+      <!-- Cards Alt Menü -->
       <ul v-if="yazilarAltmenu" class="yazilar-altmenu">
         <li>
           <a href="/#/controlPanel/addCard">
@@ -33,15 +33,9 @@
           >
         </li>
         <li>
-          <a href="/#/controlPanel/yazilar">
+          <a href="/#/controlPanel/cardList">
             <i class="fas fa-angle-right"></i>
             <p>Card List</p></a
-          >
-        </li>
-        <li>
-          <a href="/#/controlPanel/yazi_kategoriler">
-            <i class="fas fa-angle-right"></i>
-            <p>Kategories</p></a
           >
         </li>
       </ul>
@@ -87,7 +81,7 @@
 
       <!-- Kullanıcılar -->
       <li>
-        <a>
+        <a href="/#/controlPanel/users">
           <div class=""><i class="fas fa-user"></i>Users</div>
 
           <div class="">

@@ -1,39 +1,75 @@
 <template>
   <div>
     <q-form class="q-gutter-md">
-      <img class="studentImage" :src="cardInfo.image" />
+      <div class="container">
+        <p class="title">Card Add Form</p>
+        <div class="row">
+          <div class="col-md-6 float-left">
+            <q-input
+              @input="$v.input.$touch()"
+              class="text"
+              filled
+              v-model="cardInfo.cardName"
+              label="Card name *"
+            />
+            <p>{{ $v }}</p>
 
-      <input
-        ref="imageInput"
-        @change="onImagePicked"
-        type="file"
-        style="display: none"
-        accept="image/*"
-      />
-      <q-btn
-        v-if="btnGoster"
-        color="red-13"
-        label="Resim Seç"
-        @click.prevent="chooseImage"
-      />
-      <q-btn
-        v-if="resimGoster"
-        color="grey-13"
-        label="Resim Sil"
-        @click.prevent="removeImage"
-      />
+            <q-input
+              class="text"
+              filled
+              v-model="cardInfo.title1"
+              label="title1 *"
+            />
+
+            <q-input
+              class="text"
+              filled
+              v-model="cardInfo.title2"
+              label="title1 *"
+            />
+          </div>
+          <div class="col-md-6 float-left card-image">
+            <img class="" :src="cardInfo.image" />
+
+            <input
+              class="btn"
+              ref="imageInput"
+              @change="onImagePicked"
+              type="file"
+              style="display: none"
+              accept="image/*"
+            />
+            <q-btn
+              class="btn"
+              v-if="btnGoster"
+              color="red-13"
+              label="Resim Seç"
+              @click.prevent="chooseImage"
+            />
+            <q-btn
+              class="btn"
+              v-if="resimGoster"
+              color="grey-13"
+              label="Resim Sil"
+              @click.prevent="removeImage"
+            />
+          </div>
+        </div>
+      </div>
     </q-form>
 
-    <div class="q-pa-md">
-      <!-- <p class="uyari-mesaj" v-if="uyariMesaj">
-            Lütfen İlgili Alanları Doldurunuz
-          </p> -->
-      <q-btn
-        class="q-ma-sm"
-        label="Kaydet"
-        @click="savePackages"
-        color="primary"
-      />
+    <div class="container">
+      <div class="q-pa-md">
+        <p v-if="successMessage" class="successMessage">
+          Your Card registered successfully
+        </p>
+        <q-btn
+          class="saveBtn q-ma-sm"
+          label="Kaydet"
+          @click="savePackages"
+          color="primary"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -42,21 +78,35 @@
 import axios from "axios";
 import { storage } from "../../boot/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { uid } from "quasar";
+//import { required } from "vuelidate/lib/validators";
 export default {
   data() {
     return {
+      successMessage: false,
       resimGoster: false,
-
+      cardName: "",
       btnGoster: true,
       cardInfo: {
-        cardName: "Card Name1",
+        cardName: "",
         image: "https://via.placeholder.com/150",
+        title1: "",
+        title2: "",
+        uid: uid(),
       },
       image: null,
     };
   },
+
+  // validations: {
+  //   text: {
+  //     required,
+  //   },
+  // },
   methods: {
     savePackages() {
+      this.successMessage = false;
+
       if (this.cardInfo.image == "https://via.placeholder.com/150") {
         console.log("Resim Seçilmedi");
       } else {
@@ -66,14 +116,17 @@ export default {
             this.cardInfo
           )
           .then((result) => {
+            console.log(result.data.name);
             const savedPackageId = result.data.name;
 
             if (this.image) {
+              console.log("Resim Seçildi", this.image);
+
               const imageName = this.image.name;
               const ext = imageName.slice(imageName.lastIndexOf("."));
               const imageRef = ref(
                 storage,
-                "karotis/" + "image" + Date.now() + ext
+                "cards/" + "image" + Date.now() + ext
               );
 
               const uploadTask = uploadBytes(imageRef, this.image).then(
@@ -82,19 +135,22 @@ export default {
                   getDownloadURL(snapshot.ref).then((downloadUrl) => {
                     console.log("file is located at ", downloadUrl);
 
-                    axios.patch(
-                      "https://cards-a348d-default-rtdb.firebaseio.com/cards/" +
-                        savedPackageId +
-                        ".json",
-                      { image: downloadUrl }
-                    );
+                    axios
+                      .patch(
+                        "https://cards-a348d-default-rtdb.firebaseio.com/cards/" +
+                          savedPackageId +
+                          ".json",
+                        { image: downloadUrl }
+                      )
+                      .then(() => {
+                        this.successMessage = true;
 
-                    // api.patch(
-                    //   "https://product-manager-25e0b-default-rtdb.firebaseio.com/packages/" +
-                    //     savedPackageId +
-                    //     ".json",
-                    //   { packageID: "65465" }
-                    // );
+                        this.cardInfo = "";
+                        this.image = null;
+                        this.cardInfo.image = "https://via.placeholder.com/150";
+                        this.resimGoster = false;
+                        this.btnGoster = true;
+                      });
                   });
                 }
               );
@@ -128,6 +184,7 @@ export default {
       this.resimGoster = true;
       this.btnGoster = false;
     },
+
     removeImage() {
       this.image = null;
       this.cardInfo.image = "https://via.placeholder.com/150";
@@ -138,4 +195,35 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.successMessage {
+  width: 180px;
+  padding: 7px;
+  background-color: green;
+  color: white;
+}
+.title {
+  font-size: 22px;
+  margin-top: 30px;
+}
+.text {
+  margin-top: 10px;
+  margin-right: 40px;
+}
+.card-image {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-image img {
+  width: 190px;
+  margin-bottom: 10px;
+}
+.btn {
+  width: 190px;
+}
+.saveBtn {
+  width: 150px;
+  margin-left: -15px;
+}
+</style>

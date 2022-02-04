@@ -94,7 +94,13 @@
                   <p :style="editFontSize2" class="text2">{{ text2 }}</p>
                 </div>
 
-                <img class="img-content" :src="getCardDetails.imgUrl" />
+                <img
+                  class="img-content"
+                  src="https://c-static.smartphoto.com/structured/repositoryimage/productcategory/fun_ideas/regularcards/topimages/0001/image/regular-cards-carrousel1.jpg"
+                />
+                <div>
+                  {{ CardDetails.image }}
+                </div>
               </div>
               <div class="edit-footer">
                 <q-btn
@@ -133,7 +139,7 @@
 <script>
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-
+import axios from "axios";
 export default {
   setup() {
     return {};
@@ -156,9 +162,9 @@ export default {
       hValue: 50,
       vValue: 50,
       textLocation: "",
-      getCardList: [],
+      CardList: [],
       cardID: this.$route.params.id,
-      getCardDetails: {},
+      CardDetails: {},
       color: "background-color:white",
       text1: "Welcome back! It looks like you were ",
       text2: "Welcome back! It looks like you were ",
@@ -186,14 +192,7 @@ export default {
   },
   watch: {},
   created() {
-    this.getCardList = this.$store.state.cardList;
-
-    const founData = this.getCardList.find((item, index) => {
-      if (item.id === this.cardID) {
-        return true;
-      }
-    });
-    this.getCardDetails = founData;
+    this.getCardList();
   },
   computed: {},
   watch: {
@@ -202,17 +201,37 @@ export default {
     },
   },
   methods: {
+    getCardList() {
+      axios
+        .get("https://cards-a348d-default-rtdb.firebaseio.com/cards.json")
+        .then((response) => {
+          console.log(response.data);
+          this.CardList = response.data;
+          console.log("Card Listesi", this.CardList);
+          this.CardList = Object.values(this.CardList);
+
+          const founData = this.CardList.find((item, index) => {
+            if (item.uid === this.cardID) {
+              console.log("Kayıt Bulundu");
+              return true;
+            }
+          });
+          this.CardDetails = founData;
+        });
+    },
+
     previewHidden() {
       this.isPreview = false;
     },
     previewShow() {
       const section = document.getElementById("content");
+      console.log("content", section);
       window.html2canvas = html2canvas;
       var test = this;
       html2canvas(section).then(function (canvas) {
         const uri = canvas.toDataURL();
         test.previewContent = uri;
-        console.log(uri);
+        console.log("kkkkkkkkkkkkk", uri);
         test.isPreview = true;
       });
     },
